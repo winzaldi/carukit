@@ -1,0 +1,57 @@
+<ion-view class="text-center" >
+
+    <ion-header-bar align-title="center" class="bar-calm text-center">
+        <button class="button button-white  icon ion-android-arrow-back" ng-click="goBack()">
+        </button>
+        <h4 class="col-75" style="color: white">Detail</h4>
+    </ion-header-bar>
+
+    <ion-content class="padding scroll-content-false text-left">
+
+        <ion-item>
+            <ion-label><h5>Nama Rumah Sakit</h5></ion-label>
+            <ion-input><strong>{{rs.jenis + ' ' + rs.nama}}</strong></ion-input>
+        </ion-item>
+
+        <ion-item>
+            <ion-label><h5>Alamat</h5></ion-label>
+            <ion-input><strong>{{rs.alamat}}</strong></ion-input>
+        </ion-item>
+
+        <ion-item>
+            <ion-label><h5>Telpon</h5> </ion-label>
+            <ion-input><strong>{{rs.telpon}}</strong></ion-input>
+        </ion-item>
+
+        <ion-item>
+            <ion-label><h5>Fax</h5> </ion-label>
+            <ion-input><strong>{{rs.fax}}</strong></ion-input>
+        </ion-item>
+
+        <ion-item>
+            <ion-label><h5>website</h5> </ion-label>
+            <ion-input><a href='#/app/rs/{{rs.kode}}' ng-click="openUrl(rs.website)" > 
+                          <strong> {{rs.website}} </strong> </a>
+            </ion-input>
+        </ion-item>
+
+        <ion-item>
+            <ion-label><h5>e-mail</h5> </ion-label>
+            <ion-input><strong>{{rs.email}}</strong></ion-input>
+        </ion-item>
+
+        <div style="margin-bottom: 10px"></div>
+
+        <div class="text-center">
+            <a class="button  button-positive icon-left ion-android-car" 
+               ng-href="#/app/route/{{rs.kode}}" style="width: 40%" >Rute
+            </a>
+
+            <a class="button  button-positive icon-left ion-android-call" 
+               ng-href='tel: {{rs.telpon.split(",")[0]}} '>Call {{rs.telpon.split(",")[0]}}
+            </a>
+        </div>
+
+    </ion-content>
+
+</ion-view>    

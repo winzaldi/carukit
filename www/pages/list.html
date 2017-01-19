@@ -1,0 +1,28 @@
+<ion-view cache-view="false">
+
+    <ion-header-bar align-title="center" class="bar-calm text-center">
+        <button class="button button-white  icon ion-android-arrow-back" ng-click="goBack()">
+        </button>
+        <h4 class="col-75" style="color: white">Daftar Rumah Sakit</h4>
+    </ion-header-bar>
+    
+    <div class="bar bar-subheader item-input-inset bar-calm">
+        <label class="item-input-wrapper">
+            <i class="icon ion-search placeholder-icon"></i>
+            <input type="search" ng-model="listRS.search['nama']" required placeholder="Search">
+        </label>
+    </div>
+
+    <ion-content  class="has-subheader">
+        <ion-list id="iListRs">        
+            <ion-item class="item-icon-left" ng-repeat="rs in listRS| filter:listRS.search  track by $index "
+                      href="#/app/rs/{{rs.kode}}">
+                
+                <i class="icon ion-ios-home-outline"></i>
+                {{rs.jenis + ' ' + rs.nama}}
+                
+            </ion-item>
+        </ion-list>
+    </ion-content>
+
+</ion-view>

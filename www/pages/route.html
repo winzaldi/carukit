@@ -1,0 +1,25 @@
+<ion-view class="text-center" >
+    <!--    <ion-nav-bar class="bar-calm">
+            <ion-nav-back-button>
+                <i class="ion-arrow-left-c"></i> Back
+            </ion-nav-back-button>
+        </ion-nav-bar>-->
+
+    <ion-header-bar align-title="center" class="bar-calm text-center">
+        <button class="button button-white  icon ion-android-arrow-back" ng-click="goBack()">
+        </button>
+        <h4 class="col-75" style="color: white">Rute</h4>
+    </ion-header-bar>
+
+    <ion-content>
+        <!--        <ion-spinner ng-show="LoadingView"  icon="spiral"></ion-spinner>-->
+        <div id="maproute" name="map" data-tap-disabled="true" ></div>
+        <div style="margin-bottom: 5px" ></div>
+        <div id="directionsPanel">
+        </div>
+
+        <div style="margin-bottom: 10px" ></div>
+
+        <button class="button button-small button-positive icon-left ion-refresh" ng-click="goRefresh()">Refresh</button>
+    </ion-content>
+</ion-view>

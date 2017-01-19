@@ -1,0 +1,158 @@
+<html>
+    <head>
+
+    </head>
+    <body>
+        <!--<script src="http://maps.googleapis.com/maps/api/js?sensor=false&amp;libraries=places"></script>-->
+        <script src="http://maps.google.com/maps/api/js?key=AIzaSyDFberVyWaVDCxFLaRxYLxUuSd4uPb_I2s&libraries=geometry"></script>
+        <script src="assets/js/jquery-1.11.0.min.js"></script>
+        <script type="text/javascript">
+            var map;
+            var geocoder;
+            var bounds = new google.maps.LatLngBounds();
+            var markersArray = [];
+
+        // setting marker untuk origin dan juga destination
+            var destinationIcon = "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=D|FF0000|000000";
+            var originIcon = "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=O|FFFF00|000000";
+
+        // tentukan terlebih dahulu letak petanya 
+            function initialize() {
+                var opts = {
+                    center: new google.maps.LatLng(-7.25009, 112.744331),
+                    zoom: 5,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                };
+                map = new google.maps.Map(document.getElementById('map'), opts);
+                geocoder = new google.maps.Geocoder();
+            }
+
+            /*      
+             menghitung jarak dari data yg dikirim dari form
+             disini saya setting untuk mode DRIVING dan menggunakan jalan raya atau juga tol,
+             jika ingin mengganti konfigurasinya, silahkan ganti false dengan true
+             */
+            function calculateDistances() {
+                var service = new google.maps.DistanceMatrixService();
+                service.getDistanceMatrix(
+                        {
+                            origins: [document.getElementById("origins").value],
+                            destinations: [document.getElementById("destinations").value],
+                            travelMode: google.maps.TravelMode.DRIVING,
+                            unitSystem: google.maps.UnitSystem.METRIC,
+                            avoidHighways: false,
+                            avoidTolls: false
+                        }, callback);
+            }
+
+        // responde dari Googlemaps Distance Matrix akan diolah dan di kirim ke output HTML
+            function callback(response, status) {
+                if (status != google.maps.DistanceMatrixStatus.OK) {
+                    alert('Error was: ' + status);
+                } else {
+                    var origins = response.originAddresses;
+                    var destinations = response.destinationAddresses;
+                    var outputDiv = document.getElementById('outputDiv');
+                    outputDiv.innerHTML = '';
+                    deleteOverlays();
+
+                    for (var i = 0; i < origins.length; i++) {
+                        var results = response.rows[i].elements;
+                        addMarker(origins[i], false);
+                        for (var j = 0; j < results.length; j++) {
+                            addMarker(destinations[j], true);
+                            outputDiv.innerHTML += origins[i] + " to " + destinations[j] + ": " + results[j].distance.text + " in " + results[j].duration.text + " ";
+                        }
+                        document.getElementById("time").value = results[0].duration.text;
+                        document.getElementById("distance").value = results[0].distance.text;
+                    }
+                }
+            }
+
+        // menampilkan marker untuk origin dan juga destination 
+            function addMarker(location, isDestination) {
+                var icon;
+                if (isDestination) {
+                    icon = destinationIcon;
+                } else {
+                    icon = originIcon;
+                }
+
+                geocoder.geocode({'address': location}, function (results, status) {
+                    if (status == google.maps.GeocoderStatus.OK) {
+                        bounds.extend(results[0].geometry.location);
+                        map.fitBounds(bounds);
+                        var marker = new google.maps.Marker({map: map, position: results[0].geometry.location, icon: icon});
+                        markersArray.push(marker);
+                    } else {
+                        alert("Geocode was not successful for the following reason: " + status);
+                    }
+                });
+            }
+
+        // menghapus koordinat marker sebelumnya dan menggantinya dengan koordinat yang baru 
+            function deleteOverlays() {
+                if (markersArray) {
+                    for (i in markersArray) {
+                        markersArray[i].setMap(null);
+                    }
+                    markersArray.length = 0;
+                }
+            }
+        </script>
+
+        <div class="container">
+            <div class="navbar navbar-inverse navbar-fixed-top">
+                <div class="navbar-inner">
+                    <div class="container">
+                        <button class="btn btn-navbar" type="button" data-toggle="collapse" data-target=".nav-collapse"> </button> 
+                        <a class="brand" href="#">Distance Calculator Application</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="well">
+                <form id="inputs" class="form-vertical">
+                    <div class="control-group">
+                        <label class="control-label" for="Dari">Origin</label>
+                        <div class="controls">
+                            <input id="origins" class="input-xlarge" type="text" width="400px" placeholder="Origin" />
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="Tujuan">Destination</label>
+                        <div class="controls">
+                            <input id="destinations" class="input-xlarge" type="text" width="400px" placeholder="Destination" />
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <div class="controls">
+                            <button class="btn btn-warning" type="button"> <i class="icon-map-marker"></i> Calculate the distance and estimated time</button>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="well">
+                    <form id="inputs" class="form-vertical">
+                        <div class="control-group">
+                            <label class="control-label" for="Distance">Distance</label>
+                            <div class="controls">
+                                <input id="distance" class="input-xlarge" type="text" />
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label" for="Estimated Time">Estimated Time</label>
+                            <div class="controls">
+                                <input id="time" class="input-xlarge" type="text" />
+                            </div>
+                        </div>
+                    </form>
+                    <div id="outputDiv"></div>
+                    <div id="map"></div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
